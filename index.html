@@ -1,0 +1,163 @@
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | G-Code</title>
+
+    
+    <meta name="description" content="Documentation and reference library for ZURB Foundation. JavaScript, CSS, components, grid and more." />
+    
+    <meta name="author" content="ZURB, inc. ZURB network also includes zurb.com" />
+    <meta name="copyright" content="ZURB, inc. Copyright (c) 2013" />
+ 
+    <link rel="stylesheet" href="assets/css/foundation.css" />
+    <!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet"> -->
+     
+  
+
+   <script src="phonegap.js"></script>
+   
+    
+  </head>
+  <body>
+    
+
+  <!-- Header and Nav -->
+  <nav class="top-bar" data-topbar>
+    <ul class="title-area">
+      <!-- Title Area -->
+      <li class="name">
+        <h1>
+          <a href="#">
+            <img src="assets/images/g-code-logo.jpg" style="width: 100px;" />
+          </a>
+        </h1>
+      </li>
+      <li class="toggle-topbar menu-icon"><a href="#"><span>About</span></a></li>
+    </ul>
+
+    <section class="top-bar-section">
+
+     
+    </section>
+  </nav>
+  
+  <div class="row panel">
+  
+  			<div class="large-12 small-12 columns">
+            	<select id="category">
+                	<option> Select Category </option>
+                    <option value="#fire"> Fire </option>
+                    <option value="#Security"> Security </option>
+                    <option value="#Police"> Police </option>
+                    <option value="#Polling"> Polling </option>
+                    <option value="#Traffic"> Traffic </option>
+                    <option value="#healthEmergency"> Health Emergency </option>
+                </select>
+            </div>
+  
+              <div class="large-12 small-12 columns">
+                <div class="panel btn" id="snap" style="border:1px solid #efefef; border-radius:2px">
+                 <center>
+                  <h5>Take Picture</h5>
+                	<i class="fa fa-5x fa-picture-o"></i>
+                  <img id='cam_port' src="">
+                   </center>
+                </div>
+              </div>
+           <div class="large-9 small-9 columns">
+                <div class="panel" style="padding:0px !important;">
+                 <textarea rows="" id="comment" placeholder="Comment/Reviews">Comment/Reviews</textarea>
+                </div>
+              </div>
+ 
+              <div class="large-3 small-3 columns">
+                <a href="javascript:;" id="send" class="small button"><i class="fa fa-upload"></i> <br/>Send</a>
+              </div>
+          </div>
+  
+          </div>
+
+         <!--   <script src="assets/js/foundation.js"></script>
+ -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+     <!--  <script src="assets/js/modernizr.js"></script> -->
+
+     <script src="js/memory-store.js"></script>
+
+      <script src="js/main.js"></script>
+    <script type="text/javascript">
+
+    
+   $(document).ready(function()
+    {
+
+      console.log( "ready!" );
+$("#send").click( function() {
+    //ev.preventDefault();
+    console.log('addLocation');
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            $('.location', this.el).html(position.coords.latitude + ',' + position.coords.longitude);
+            alert(position.coords.latitude + ',' + position.coords.longitude);
+
+
+
+      var comments = $('#comment').val();
+      var category = $('#category').val();
+
+      $.post( "http://localhost/g-code/api/location", 
+        { gcode: 'LA100' , 
+        lat: position.coords.latitude , 
+        lng: position.coords.longitude, 
+        comment: comments, 
+        category: category }, function( data ) {
+        $( ".result" ).html( data );
+      }); 
+        },
+        function() {
+            alert('Error getting location');
+        });
+    return false;
+});
+
+
+$("#snap").click( function(event) {
+
+event.preventDefault();
+    if (!navigator.camera) {
+        app.showAlert("Camera API not supported", "Error");
+        return;
+    }
+
+    var options =   {   quality: 100,
+                        destinationType: Camera.DestinationType.DATA_URL,
+                        sourceType: 1,      // 0:Photo Library, 1=Camera, 2=Saved Photo Album
+                        encodingType: 0     // 0=JPG 1=PNG
+                    };
+
+     navigator.camera.getPicture(
+        function(imageData) {
+            $('#cam_port', this.el).attr('src', "data:image/jpeg;base64," + imageData);
+        },
+        function() {
+            app.showAlert('Error taking picture', 'Error');
+        },
+        options);
+ 
+return false;
+
+  });
+
+
+
+    });
+    </script>
+  </body>
+</html>
+
